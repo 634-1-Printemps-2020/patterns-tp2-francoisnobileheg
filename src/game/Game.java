@@ -15,6 +15,8 @@ public class Game {
 
     public Game() {
         history = new HashMap<>();
+        coin = Coin.getInstance();
+        rules = Rules.getInstance();
     }
 
     /**
@@ -23,14 +25,27 @@ public class Game {
      * @param player le nouveau joueur
      */
     public void addPlayer(Player player) {
-      // TODO: Votre code ici
+        history.put(player, new ArrayList<>());
     }
 
     /**
-     * Faire joueur tous les joueurs et stocker chaque partie dans history
+     * Faire jouer tous les joueurs et stocker chaque partie dans history
      */
     public void play() {
-      // TODO: Votre code ici
+        for (Player p : history.keySet()) {
+            // tant que le joueur n'a pas gagné
+            while (!rules.checkWin(history.get(p))) {
+                // lancer la pièce
+                p.play(coin);
+                // récupère la liste du joueur
+                List<CoinState> lstc = history.get(p);
+                // ajoute le lancer du joueur
+                lstc.add(coin.getState());
+                //history.put(p, history.get(p).add(coin.getState()));
+                // met la liste de lancer du joueur à jour
+                history.put(p, lstc);
+            }
+        }
     }
 
     /**
@@ -39,8 +54,28 @@ public class Game {
      * @return Statistics
      */
     public Statistics getStatistics() {
-      // TODO: Votre code ici
-      return null;
+        // instanciation à une très grande valeur pour le test suivant
+        int fewerMovesToWin = 1000000000;
+        int mostMovesToWin = 0;
+        int totalNumberMoves = 0;
+
+
+        for (Player p : history.keySet()) {
+            totalNumberMoves += history.get(p).size();
+            if (history.get(p).size() < fewerMovesToWin) {
+                fewerMovesToWin = history.get(p).size();
+            }
+            if (history.get(p).size() > mostMovesToWin) {
+                mostMovesToWin = history.get(p).size();
+            }
+
+        }
+
+        float averageToWin = (float) totalNumberMoves / history.keySet().size();
+
+
+        Statistics stat = new Statistics(averageToWin, fewerMovesToWin, mostMovesToWin, totalNumberMoves);
+        return stat;
     }
 
     /**
@@ -49,8 +84,7 @@ public class Game {
      * @return Map contenant chaque joueur et la liste des ses lancers
      */
     public Map<Player, List<CoinState>> getHistory() {
-      // TODO: Votre code ici
-      return null;
+        return history;
     }
 
 
@@ -61,8 +95,9 @@ public class Game {
      * @return la liste des lancers d'un joueur
      */
     public List<CoinState> getSpecificHistory(Player player) {
-      // TODO: Votre code ici
-      return null;
+        if (history.containsKey(player)) {
+            return history.get(player);
+        }
+        return null;
     }
-
 }

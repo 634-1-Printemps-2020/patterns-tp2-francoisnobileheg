@@ -11,4 +11,5 @@ public enum CoinState {
         return values()[r.nextInt(values().length)];
     }
 
+
 }

@@ -26,7 +26,15 @@ public class Rules {
      * @return true si un joueur a gagné, false sinon
      */
     public boolean checkWin(List<CoinState> states) {
-        // TODO: Votre code ici
+        if (states.size() >= 3) {
+            if (states.get(states.size() - 1).equals(CoinState.TAILS)) {
+                if (states.get(states.size() - 2).equals(CoinState.TAILS)) {
+                    if (states.get(states.size() - 3).equals(CoinState.TAILS)) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 }
